@@ -59,7 +59,6 @@ import {
   FaMicroscope,
   FaShieldAlt,
   FaInfoCircle,
-  FaQuestionCircle,
 } from 'react-icons/fa'
 import axios from 'axios'
 import ReactMarkdown from 'react-markdown'
@@ -84,6 +83,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [activeModal, setActiveModal] = useState<string | null>(null)
 
   const bgColor = useColorModeValue('white', 'gray.800')
   const borderColor = useColorModeValue('gray.200', 'gray.700')
@@ -92,6 +92,16 @@ export default function Home() {
   const cardBg = useColorModeValue('white', 'gray.700')
   const hoverBg = useColorModeValue('gray.50', 'gray.600')
   const headerBg = useColorModeValue('rgba(255, 255, 255, 0.8)', 'rgba(26, 32, 44, 0.8)')
+
+  const handleOpenModal = (modalType: string) => {
+    setActiveModal(modalType)
+    onOpen()
+  }
+
+  const handleCloseModal = () => {
+    setActiveModal(null)
+    onClose()
+  }
 
   const onDrop = async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
@@ -192,7 +202,7 @@ export default function Home() {
                 colorScheme="blue"
                 size="sm"
                 leftIcon={<FaChartLine />}
-                onClick={onOpen}
+                onClick={() => handleOpenModal('stats')}
               >
                 View Stats
               </Button>
@@ -463,7 +473,7 @@ export default function Home() {
       </Box>
 
       {/* Stats Modal */}
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal isOpen={isOpen && activeModal === 'stats'} onClose={handleCloseModal} size="xl">
         <ModalOverlay backdropFilter="blur(10px)" />
         <ModalContent>
           <ModalHeader>Analysis Statistics</ModalHeader>
